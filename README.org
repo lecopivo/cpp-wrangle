@@ -6,6 +6,11 @@
 
   To make the transition from VEX to C++ as simple as possible, we provide C++ implementation of VEX functions. Therefore you can write almost the same code in C++ as you would write it with VEX.
 
+
+** Original idea
+
+   This node is an extension of the node made by [[https://vimeo.com/171189268][animatrix]]. My version should be easier to use for people experienced with VEX.
+
 * Installation and Requirements
 
   Talk about how to modify `hcustom` to C++17 and add no warning flags.
