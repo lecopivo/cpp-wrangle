@@ -12,3 +12,11 @@
   
   
   
+* Three modules
+
+** cppvex
+   C++ impelementation of VEX functions
+** hougen
+   connection between Houdini and Eigen
+** fe
+   finite element library

@@ -3,6 +3,7 @@
 #include "cppvex_attrib.h"
 #include "cppvex_attrib_buffer.h"
 #include "cppvex_bbox.h"
+#include "cppvex_count.h"
 #include "cppvex_geometry.h"
 #include "cppvex_groups.h"
 #include "cppvex_math.h"

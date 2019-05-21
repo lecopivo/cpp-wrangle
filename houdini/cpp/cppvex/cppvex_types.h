@@ -10,6 +10,8 @@ template <class Real, std::size_t Dim> struct vector {
   using type = UT_FixedVector<Real, Dim, true>;
 };
 
+template <class Real> struct vector<Real, 1> { using type = Real; };
+
 template <class Real> struct vector<Real, 2> {
   using type = UT_Vector2T<Real>;
 };
@@ -23,6 +25,9 @@ template <class Real> struct vector<Real, 4> {
 template <class Real, std::size_t RowDim, std::size_t ColDim> struct matrix {
   using type = void;
 };
+
+template <class Real> struct matrix<Real, 1, 1> { using type = Real; };
+
 template <class Real> struct matrix<Real, 2, 2> {
   using type = UT_Matrix2T<Real>;
 };

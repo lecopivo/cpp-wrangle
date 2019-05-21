@@ -8,6 +8,12 @@
 
 namespace cppvex {
 
+//          _    _           _     _
+//  __ _ __| |__| |_ __  ___(_)_ _| |_
+// / _` / _` / _` | '_ \/ _ \ | ' \  _|
+// \__,_\__,_\__,_| .__/\___/_|_||_\__|
+//                |_|
+
 GA_Offset addpoint(GA_Detail *geo, const vector3 pos) {
   GA_Offset offset = geo->appendPoint();
   geo->setPos3(offset, pos);
@@ -15,8 +21,14 @@ GA_Offset addpoint(GA_Detail *geo, const vector3 pos) {
 }
 
 GA_Offset addpoint(const vector3 pos) {
-  return addpoint(internal::output_geometry, pos);
+  return addpoint(output_geometry(), pos);
 }
+
+//          _    _          _
+//  __ _ __| |__| |_ __ _ _(_)_ __
+// / _` / _` / _` | '_ \ '_| | '  \
+// \__,_\__,_\__,_| .__/_| |_|_|_|_|
+//                |_|
 
 // The following template should be constrained with such that all T are the
 // same, but I'm missing full c++17 to do int nicely.
@@ -40,8 +52,13 @@ GA_Offset addprimtogeo(GEO_Detail *geo, T... point_offsets) {
 
 template <class... T> //, class = std::enable_if_t<are_same<GA_Offset, T...>>>
 GA_Offset addprim(T... point_offsets) {
-  return addprimtogeo(internal::output_geometry, point_offsets...);
+  return addprimtogeo(output_geometry(), point_offsets...);
 }
+
+//          _    _             _
+//  __ _ __| |__| |_ _____ _ _| |_ _____ __
+// / _` / _` / _` \ V / -_) '_|  _/ -_) \ /
+// \__,_\__,_\__,_|\_/\___|_|  \__\___/_\_\
 
 GA_Offset addvertex(GA_Detail *geo, GA_Offset prim_offset,
                     GA_Offset point_offset) {
@@ -57,41 +74,29 @@ GA_Offset addvertex(GA_Detail *geo, GA_Offset prim_offset,
 }
 
 GA_Offset addvertex(GA_Offset prim_offset, GA_Offset point_offset) {
-  return addvertex(internal::output_geometry, prim_offset, point_offset);
+  return addvertex(output_geometry(), prim_offset, point_offset);
 }
 
-int npoints(const int input_index) {
-  return internal::input_geometry[input_index]->getNumPoints();
-}
-
-int npoints() { return internal::output_geometry->getNumPoints(); }
-
-int nprimitives(const int input_index) {
-  return internal::input_geometry[input_index]->getNumPrimitives();
-}
-
-int nprimitives() { return internal::output_geometry->getNumPrimitives(); }
-
-int nvertices(const int input_index) {
-  return internal::input_geometry[input_index]->getNumVertices();
-}
-
-int nvertices() { return internal::output_geometry->getNumVertices(); }
+//           _      _             _     _
+//  _ __ _ _(_)_ __| |_ _ __  ___(_)_ _| |_
+// | '_ \ '_| | '  \  _| '_ \/ _ \ | ' \  _|
+// | .__/_| |_|_|_|_\__| .__/\___/_|_||_\__|
+// |_|                 |_|
 
 GA_Offset primpoint(const GA_Detail *geo, const GA_Offset prim_offset,
                     const GA_Size vertex_local_index) {
   return geo->getPrimitive(prim_offset)->getPointOffset(vertex_local_index);
 }
 
-GA_Offset primpoint(const int input_index, const GA_Offset prim_offset,
-                    const GA_Size vertex_local_index) {
-  return primpoint(internal::input_geometry[input_index], prim_offset,
-                   vertex_local_index);
-}
-
 GA_Offset primpoint(const GA_Offset prim_offset,
                     const GA_Size   vertex_local_index) {
-  return primpoint(internal::output_geometry, prim_offset, vertex_local_index);
+  return primpoint(output_geometry(), prim_offset, vertex_local_index);
+}
+
+GA_Offset primpoint(const int input_index, const GA_Offset prim_offset,
+                    const GA_Size vertex_local_index) {
+  return primpoint(input_geometry(input_index), prim_offset,
+                   vertex_local_index);
 }
 
 } // namespace cppvex

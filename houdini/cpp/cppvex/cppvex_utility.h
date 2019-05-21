@@ -6,15 +6,12 @@
 
 #include <SOP/SOP_Node.h>
 
+#include "cppvex_context.h"
 #include "cppvex_types.h"
 
 namespace cppvex {
 
 namespace internal {
-
-float     time;
-SOP_Node *current_node;
-SOP_Node *execution_node;
 
 std::string full_path(const char *parm) {
 
@@ -46,19 +43,19 @@ void register_parm(OP_Node *pnode, const char *pname) {
 } // namespace internal
 
 float chf(const char *parm, const int component = 0) {
-  auto[node, name] = internal::parm_node_and_name(parm);
+  auto [node, name] = internal::parm_node_and_name(parm);
   internal::register_parm(node, name.c_str());
   return node->evalFloat(name, component, internal::time);
 }
 
 int chi(const char *parm, const int component = 0) {
-  auto[node, name] = internal::parm_node_and_name(parm);
+  auto [node, name] = internal::parm_node_and_name(parm);
   internal::register_parm(node, name.c_str());
   return node->evalInt(name, component, internal::time);
 }
 
 std::string chs(const char *parm) {
-  auto[node, name] = internal::parm_node_and_name(parm);
+  auto [node, name] = internal::parm_node_and_name(parm);
   internal::register_parm(node, name.c_str());
   UT_String val;
   node->evalString(val, name, 0, internal::time);
