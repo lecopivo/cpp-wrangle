@@ -1,0 +1,14 @@
+* Houdini Cpp Wrangle 
+
+  This Houdini node allows you to write wrangle nodes in C++ instead of VEX.
+
+  VEX is an amazing tool for prototyping and fast production, however it is quite simplistic and sometimes broken language. Writing wrangle nodes in C++ brings the full expressive power of C++ and access to HDK(Houdini C++ API) in the expense of slow compilation times compared to VEX. 
+
+  To make the transition from VEX to C++ as simple as possible, we provide C++ implementation of VEX functions. Therefore you can write almost the same code in C++ as you would write it with VEX.
+
+  
+
+
+  
+  
+  

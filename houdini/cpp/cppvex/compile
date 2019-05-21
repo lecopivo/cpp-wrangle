@@ -1,0 +1,16 @@
+#!/bin/bash
+
+VAR=$1
+DIR=$(dirname "${VAR}")
+FILE=$(basename "${VAR}")
+
+# load build environment
+pushd /opt/hfs17.0/
+source houdini_setup
+popd
+
+pushd $DIR
+# compile the code
+hcustom $FILE "${@:2:99}"
+popd
+
