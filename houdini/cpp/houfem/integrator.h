@@ -5,7 +5,7 @@
 #include "affine_map.h"
 #include "simplex_gm_rule.h"
 
-namespace simplex{
+namespace houfem{
 
 template <std::size_t Dim> struct Integrator {
   using Vector = Eigen::Matrix<double, Dim, 1>;

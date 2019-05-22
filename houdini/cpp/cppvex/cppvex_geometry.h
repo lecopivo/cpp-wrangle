@@ -83,19 +83,19 @@ GA_Offset addvertex(GA_Offset prim_offset, GA_Offset point_offset) {
 // | .__/_| |_|_|_|_\__| .__/\___/_|_||_\__|
 // |_|                 |_|
 
-GA_Offset primpoint(const GA_Detail *geo, const GA_Offset prim_offset,
+GA_Index primpoint(const GA_Detail *geo, const GA_Index prim_index,
                     const GA_Size vertex_local_index) {
-  return geo->getPrimitive(prim_offset)->getPointOffset(vertex_local_index);
+  return geo->getPrimitiveByIndex(prim_index)->getPointIndex(vertex_local_index);
 }
 
-GA_Offset primpoint(const GA_Offset prim_offset,
+GA_Index primpoint(const GA_Index prim_index,
                     const GA_Size   vertex_local_index) {
-  return primpoint(output_geometry(), prim_offset, vertex_local_index);
+  return primpoint(output_geometry(), prim_index, vertex_local_index);
 }
 
-GA_Offset primpoint(const int input_index, const GA_Offset prim_offset,
+GA_Index primpoint(const int input_index, const GA_Index prim_index,
                     const GA_Size vertex_local_index) {
-  return primpoint(input_geometry(input_index), prim_offset,
+  return primpoint(input_geometry(input_index), prim_index,
                    vertex_local_index);
 }
 

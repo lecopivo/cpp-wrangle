@@ -2,7 +2,7 @@
 
 #include <Eigen/Dense>
 
-namespace simplex {
+namespace houfem {
 
 namespace internal {
 

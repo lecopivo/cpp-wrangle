@@ -1,11 +1,11 @@
 #pragma once
 
-#include "integrator.h"
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
+#include "integrator.h"
 
-namespace simplex {
+namespace houfem {
 
 constexpr int factorial(int n) { return n > 0 ? n * factorial(n - 1) : 1; }
 
@@ -113,7 +113,7 @@ public:
     return M;
   }
 
-  Eigen::Matrix<double, Dim, 1> point(const int i) const{
+  Eigen::Matrix<double, Dim, 1> point(const int i) const {
     using Vector = Eigen::Matrix<double, Dim, 1>;
 
     Vector E = Vector::Zero();
@@ -123,11 +123,11 @@ public:
     return from_unit_simplex(E);
   }
 
-  affine_map<1, Dim> barycentric_coordinate(const int i) const{
+  affine_map<1, Dim> barycentric_coordinate(const int i) const {
     return unit_barycentric_coordinate(i) | to_unit_simplex;
   }
 
-  Integrator<Dim> integrator(const int rule) const{
+  Integrator<Dim> integrator(const int rule) const {
     return pushforward(from_unit_simplex, unit_simplex_integrator<Dim>(rule));
   }
 
@@ -147,6 +147,34 @@ public:
 
       return {acos(e1.dot(e2)), acos(e0.dot(-e1)), acos(e2.dot(e0))};
     }
+  }
+
+  Eigen::Matrix<double, Dim + 1, Dim + 1> mass_matrix() const {
+    return factorial(Dim) * volume() * unit_mass_matrix();
+  }
+
+  Eigen::Matrix<double, Dim + 1, Dim + 1> stiffness_matrix() const {
+    auto integrate = integrator(0);
+
+    auto phi = std::array{barycentric_coordinate(0), barycentric_coordinate(1),
+                          barycentric_coordinate(2)};
+
+    Eigen::Matrix<double, Dim + 1, Dim + 1> S;
+
+    for (int i = 0; i < Dim + 1; i++) {
+      for (int j = i; j < Dim + 1; j++) {
+
+        using Vector     = Eigen::Matrix<double, Dim, 1>;
+        const double val = integrate([&](Vector const &x) {
+          return phi[i].derivative()(x).dot(phi[j].derivative()(x));
+        });
+
+        S(i, j) = val;
+        if (i != j)
+          S(j, i) = val;
+      }
+    }
+    return S;
   }
 
 public:
@@ -205,4 +233,4 @@ public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-} // namespace simplex
+} // namespace houfem

@@ -1,4 +1,4 @@
-namespace simplex {
+namespace houfem {
 
 void    comp_next(int n, int k, int a[], bool &more, int &h, int &t);
 void    gm_general_rule_set(int rule, int m, int n, double t[], double w[],

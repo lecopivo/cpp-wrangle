@@ -5,6 +5,7 @@
 #include <tuple>
 
 #include <SOP/SOP_Node.h>
+#include <OP/OP_Director.h>
 
 #include "cppvex_context.h"
 #include "cppvex_types.h"

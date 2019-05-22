@@ -8,7 +8,7 @@ using namespace std;
 
 #include "simplex_gm_rule.h"
 
-namespace simplex {
+namespace houfem {
 
 //****************************************************************************80
 
