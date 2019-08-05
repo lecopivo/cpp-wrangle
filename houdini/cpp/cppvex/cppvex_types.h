@@ -72,26 +72,18 @@ using matrix4 = matrix4f;
 
 namespace internal::traits {
 
-template <typename T> constexpr GA_Storage storage = GA_STORE_REAL32;
+template <typename T> constexpr GA_Storage storage = storage<typename T::value_type>;
 
-template <> constexpr GA_Storage storage<int> = GA_STORE_INT32;
+template <> constexpr GA_Storage storage<int>    = GA_STORE_INT32;
+template <> constexpr GA_Storage storage<float>  = GA_STORE_REAL32;
+template <> constexpr GA_Storage storage<double> = GA_STORE_REAL64;
 
 template <typename T> constexpr int tuple_size_call() {
-  if (std::is_same<int, T>::value || std::is_same<float, T>::value)
+  if constexpr (std::is_same<int, T>::value || std::is_same<float, T>::value || std::is_same<double, T>::value){
     return 1;
-  if (std::is_same<vector2, T>::value)
-    return 2;
-  if (std::is_same<vector3, T>::value)
-    return 3;
-  if (std::is_same<vector4, T>::value)
-    return 4;
-  if (std::is_same<matrix2, T>::value)
-    return 4;
-  if (std::is_same<matrix3, T>::value)
-    return 9;
-  if (std::is_same<matrix4, T>::value)
-    return 16;
-  return 0;
+  }else{
+    return T::tuple_size;
+  }
 }
 
 template <typename T> constexpr int tuple_size = tuple_size_call<T>();
