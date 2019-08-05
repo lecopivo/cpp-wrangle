@@ -100,6 +100,45 @@ mass_matrix_pwc(const GA_Detail *geo) {
   return areas.asDiagonal();
 }
 
+//  _____      ___    ___   __  __              __  __      _       _
+// | _ \ \    / / |  / __| |  \/  |__ _ ______ |  \/  |__ _| |_ _ _(_)_ __
+// |  _/\ \/\/ /| |_| (__  | |\/| / _` (_-<_-< | |\/| / _` |  _| '_| \ \ /
+// |_|   \_/\_/ |____\___| |_|  |_\__,_/__/__/ |_|  |_\__,_|\__|_| |_/_\_\
+
+Eigen::SparseMatrix<double> mass_matrix_pwlc(const GA_Detail *geo) {
+
+  using SpMat = Eigen::SparseMatrix<double>;
+  using T     = Eigen::Triplet<double>;
+
+  const int npoints     = geo->getNumPoints();
+  const int nprimitives = geo->getNumPrimitives();
+
+  SpMat          M(npoints, nprimitives);
+  std::vector<T> coefficients;
+  coefficients.reserve(3 * nprimitives);
+
+  // iterate over primitives
+  for (int I = 0; I < nprimitives; I++) {
+
+    const GA_Primitive *prim = geo->getPrimitiveByIndex(I);
+
+    // global indices of primitive points
+    auto id = std::array{prim->getPointIndex(0), prim->getPointIndex(1),
+                         prim->getPointIndex(2)};
+
+    const double area = prim->calcArea();
+
+    for (int i = 0; i < 3; i++) {
+      coefficients.emplace_back(T{(int)id[i], I, (1.0 / 3.0) * area});
+    }
+  }
+
+  M.setFromTriplets(coefficients.begin(), coefficients.end());
+  M.makeCompressed();
+
+  return M;
+}
+
 //  ___ _   _  __  __                  __  __      _       _
 // / __| |_(_)/ _|/ _|_ _  ___ ______ |  \/  |__ _| |_ _ _(_)_ __
 // \__ \  _| |  _|  _| ' \/ -_|_-<_-< | |\/| / _` |  _| '_| \ \ /
