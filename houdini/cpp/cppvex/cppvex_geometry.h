@@ -14,13 +14,13 @@ namespace cppvex {
 // \__,_\__,_\__,_| .__/\___/_|_||_\__|
 //                |_|
 
-GA_Offset addpoint(GA_Detail *geo, const vector3 pos) {
+GA_Index addpoint(GA_Detail *geo, const vector3 pos) {
   GA_Offset offset = geo->appendPoint();
   geo->setPos3(offset, pos);
-  return offset;
+  return geo->pointIndex(offset);
 }
 
-GA_Offset addpoint(const vector3 pos) {
+GA_Index addpoint(const vector3 pos) {
   return addpoint(output_geometry(), pos);
 }
 
@@ -39,20 +39,20 @@ GA_Offset addpoint(const vector3 pos) {
 // This function should be renamed to `addprim` once I figure out how to fix the
 // template
 template <class... T> //, class = std::enable_if_t<are_same<GA_Offset, T...>>>
-GA_Offset addprimtogeo(GEO_Detail *geo, T... point_offsets) {
+GA_Index addprimtogeo(GEO_Detail *geo, T... point_indices) {
   GEO_PrimPoly *prim =
       dynamic_cast<GEO_PrimPoly *>(geo->appendPrimitive(GEO_PRIMPOLY));
 
-  (prim->appendVertex(point_offsets), ...);
+  (prim->appendVertex(geo->pointOffset(point_indices)), ...);
 
   prim->close();
 
-  return prim->getMapOffset();
+  return prim->getMapIndex();
 }
 
 template <class... T> //, class = std::enable_if_t<are_same<GA_Offset, T...>>>
-GA_Offset addprim(T... point_offsets) {
-  return addprimtogeo(output_geometry(), point_offsets...);
+GA_Index addprim(T... point_indices) {
+  return addprimtogeo(output_geometry(), point_indices...);
 }
 
 //          _    _             _
@@ -60,21 +60,21 @@ GA_Offset addprim(T... point_offsets) {
 // / _` / _` / _` \ V / -_) '_|  _/ -_) \ /
 // \__,_\__,_\__,_|\_/\___|_|  \__\___/_\_\
 
-GA_Offset addvertex(GA_Detail *geo, GA_Offset prim_offset,
-                    GA_Offset point_offset) {
+GA_Index addvertex(GA_Detail *geo, GA_Index prim_index, GA_Index point_index) {
+  GA_Offset prim_offset = geo->primitiveOffset(prim_index);
   if (GEO_PRIMPOLY != geo->getPrimitiveTypeId(prim_offset))
     return -1;
 
   GEO_PrimPoly *prim =
       dynamic_cast<GEO_PrimPoly *>(geo->getPrimitive(prim_offset));
 
-  GA_Size size = prim->appendVertex(point_offset);
+  GA_Size size = prim->appendVertex(geo->pointOffset(point_index));
 
-  return prim->getVertexOffset(size);
+  return prim->getVertexIndex(size);
 }
 
-GA_Offset addvertex(GA_Offset prim_offset, GA_Offset point_offset) {
-  return addvertex(output_geometry(), prim_offset, point_offset);
+GA_Index addvertex(GA_Index prim_index, GA_Index point_index) {
+  return addvertex(output_geometry(), prim_index, point_index);
 }
 
 //           _      _             _     _
@@ -84,19 +84,33 @@ GA_Offset addvertex(GA_Offset prim_offset, GA_Offset point_offset) {
 // |_|                 |_|
 
 GA_Index primpoint(const GA_Detail *geo, const GA_Index prim_index,
-                    const GA_Size vertex_local_index) {
-  return geo->getPrimitiveByIndex(prim_index)->getPointIndex(vertex_local_index);
+                   const GA_Size vertex_local_index) {
+  return geo->getPrimitiveByIndex(prim_index)
+      ->getPointIndex(vertex_local_index);
 }
 
 GA_Index primpoint(const GA_Index prim_index,
-                    const GA_Size   vertex_local_index) {
+                   const GA_Size  vertex_local_index) {
   return primpoint(output_geometry(), prim_index, vertex_local_index);
 }
 
 GA_Index primpoint(const int input_index, const GA_Index prim_index,
-                    const GA_Size vertex_local_index) {
-  return primpoint(input_geometry(input_index), prim_index,
-                   vertex_local_index);
+                   const GA_Size vertex_local_index) {
+  return primpoint(input_geometry(input_index), prim_index, vertex_local_index);
+}
+
+//                                      _     _
+//  _ _ ___ _ __  _____ _____ _ __  ___(_)_ _| |_
+// | '_/ -_) '  \/ _ \ V / -_) '_ \/ _ \ | ' \  _|
+// |_| \___|_|_|_\___/\_/\___| .__/\___/_|_||_\__|
+//                           |_|
+
+bool removepoint(GA_Detail *geo, const GA_Index point_index) {
+  return geo->destroyPointIndex(point_index, GA_Detail::GA_DESTROY_DEGENERATE_INCOMPATIBLE);
+}
+
+bool removepoint(const GA_Index point_index) {
+  return removepoint(output_geometry(), point_index);
 }
 
 } // namespace cppvex
