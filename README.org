@@ -8,7 +8,7 @@
 
   To make the transition from VEX to C++ as simple as possible, we provide C++ implementation of VEX functions. Therefore you can write almost the same code in C++ as you would write it with VEX.
 
-  **Warrning:** This project is quite experimental, many things are broken, undocumented or unusable. I'm still trying to figure out how the whole thing should work. Any feedback is greatly appreciated!
+  *Warrning:* This project is quite experimental, many things are broken, undocumented or unusable. I'm still trying to figure out how the whole thing should work. Any feedback is greatly appreciated!
 
 ** Original idea
 
