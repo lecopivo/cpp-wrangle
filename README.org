@@ -8,6 +8,7 @@
 
   To make the transition from VEX to C++ as simple as possible, we provide C++ implementation of VEX functions. Therefore you can write almost the same code in C++ as you would write it with VEX.
 
+  **Warrning:** This project is quite experimental, many things are broken, undocumented or unusable. I'm still trying to figure out how the whole thing should work. Any feedback is greatly appreciated!
 
 ** Original idea
 
@@ -29,17 +30,15 @@
   from
   #+BEGIN_SRC 
   set CCFLAGS="$CCFLAGS -std=c++14"
-
   set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs"
   #+END_SRC
 
   to 
   #+BEGIN_SRC 
   set CCFLAGS="$CCFLAGS -std=c++17"
-
   set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-unused-but-set-variable -Wno-comment -Wno-int-in-bool-context -Wno-misleading-indentation"
   #+END_SRC 
-  The first line enables c++17 and the second one removes tons of warnings cause by [[http://eigen.tuxfamily.org][Eigen]].
+  The first line enables c++17 and the second one removes tons of warnings caused by [[http://eigen.tuxfamily.org][Eigen]].
 
   This can be done by running the following commands in the directory where =hcustom= is.
   #+BEGIN_SRC bash
