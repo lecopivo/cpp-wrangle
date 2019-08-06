@@ -15,7 +15,9 @@
 
 * Installation and Requirements
 
-  To use C++ Wrangle download this repository and modify =hcustom= to support =c++17=. Right now, it has been tested only with Houdini 17.0 and gcc-8.1.
+  To use C++ Wrangle download this repository and modify =hcustom= to support =c++17=.
+
+  Requirements: You need Houdini, modern c++ compiler and [[http://eigen.tuxfamily.org][Eigen]] library. I'm testing it with Houdini 17.0.352, gcc 8.1.0 and Eigen 3.2.92.
 
   To download this repository run the standard command where ever you like
   #+BEGIN_SRC bash
