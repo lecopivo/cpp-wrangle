@@ -1,5 +1,7 @@
 * Houdini C++ Wrangle 
 
+  [[file:img/title.png]]
+
   This Houdini node allows you to write wrangle nodes in C++ instead of VEX.
 
   VEX is an amazing tool for prototyping and fast production, however it is quite simplistic and sometimes broken language. Writing wrangle nodes in C++ brings the full expressive power of C++ and access to HDK(Houdini C++ API) in the expense of slow compilation times compared to VEX. 
@@ -20,21 +22,24 @@
   git clone https://github.com/lecopivo/cpp-wrangle.git
   #+END_SRC
 
-  Next, find =hcustom= in =<path/to/houdini>/bin/=, the default directory is =/opt/hfs17.0/bin/=, and change lines
+  Next, find =hcustom= in =<path/to/houdini>/bin/=, the default directory is =/opt/hfs17.0/bin/=, and change the two following lines of code
 
   from
-  ~set CCFLAGS="$CCFLAGS -std=c++14"~
-  to 
-  ~set CCFLAGS="$CCFLAGS -std=c++17"~
+  #+BEGIN_SRC 
+  set CCFLAGS="$CCFLAGS -std=c++14"
 
-  and
-  
-  from
-  ~set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs"~
-  to 
-  ~set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-unused-but-set-variable -Wno-comment -Wno-int-in-bool-context -Wno-misleading-indentation"~
+  set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs"
+  #+END_SRC
 
-  This can be done by running the following commands in the directory where =hcustom= is
+  to 
+  #+BEGIN_SRC 
+  set CCFLAGS="$CCFLAGS -std=c++17"
+
+  set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-unused-but-set-variable -Wno-comment -Wno-int-in-bool-context -Wno-misleading-indentation"
+  #+END_SRC 
+  The first line enables c++17 and the second one removes tons of warnings cause by [[http://eigen.tuxfamily.org][Eigen]].
+
+  This can be done by running the following commands in the directory where =hcustom= is.
   #+BEGIN_SRC bash
   cp hcustom hcustom_backup          # backup old hcustom 
   sed -i 's/c++14/c++17/g' hcustom
@@ -43,9 +48,9 @@
 
   To test if everything is working, just open up the scene in =cpp-wrangle/houdini/hip/examples.hipnc= and you should be greeted by the colorful pig:
   [[file:img/colorful_pig.png]]
-  Houdini will freeze for couple of seconds 
+  Houdini will freeze for couple of seconds because the c++ code is being compiled, see [[*Slow compilation][Slow compilation]].
 
-** Enabling finite element module `houfem`
+** Enabling finite element module =houfem=
 
    To enable finite element functions you have to do a little bit more work. Go to directory =cpp-wrangle/houdini/cpp/houfem= and build the module with the following commands
    
@@ -55,10 +60,10 @@
    make install
    #+END_SRC
 
-   To test the finite element module, open the example scene, =cpp-wrangle/houdini/hip/examples.hipnc=, 
+   To test the finite element module, open the example scene, =cpp-wrangle/houdini/hip/examples.hipnc=. For example, have a look at the =minimal_surface= and you should see the following:
 
    [[file:img/minimal_surface.png]]
- 
+
 * Slow compilation
 
   Yeah, I know...is sucks :( The compilation is really slow. But the power of c++ and HDK over VEX is worth it in many situations. The general strategy is to untick =Continuous Recompile= during development and force compilation only manually with button =Recompile=. Once you are done with the development, tick =Continuous Recompile= back on, this will automatically compile and load the c++ code.
