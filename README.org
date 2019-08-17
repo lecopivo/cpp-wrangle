@@ -16,10 +16,7 @@
 
 * Installation and Requirements
 
-  To use C++ Wrangle download this repository and modify =hcustom= to support =c++17=.
-
-  Requirements: You need Houdini, modern c++ compiler and [[http://eigen.tuxfamily.org][Eigen]] library. I'm testing it with Houdini 17.0.352, gcc 8.1.0 and Eigen 3.2.92.
-
+  Installing and running CppWrangle should be as easy as running the following commands in any directory:
   #+BEGIN_SRC 
   git clone https://github.com/lecopivo/cpp-wrangle.git
   cd cpp-wrangle/houdini/cpp
@@ -29,54 +26,16 @@
   make install
   #+END_SRC
 
-  To download this repository run the standard command where ever you like
-  #+BEGIN_SRC bash
-  git clone https://github.com/lecopivo/cpp-wrangle.git
-  #+END_SRC
+  You probably want to change =-DHOUDINI_ROOT=/opt/hfs17.0= to point to the location where Houdini is installed.
 
-  Next, find =hcustom= in =<path/to/houdini>/bin/=, the default directory is =/opt/hfs17.0/bin/=, and change the two following lines of code
-
-  from
-  #+BEGIN_SRC 
-  set CCFLAGS="$CCFLAGS -std=c++14"
-  set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs"
-  #+END_SRC
-
-  to 
-  #+BEGIN_SRC 
-  set CCFLAGS="$CCFLAGS -std=c++17"
-  set WFLAGS	= "-Wall -W -Wno-parentheses -Wno-sign-compare -Wno-reorder -Wno-uninitialized -Wunused -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-ignored-attributes -Wno-unused-but-set-variable -Wno-comment -Wno-int-in-bool-context -Wno-misleading-indentation"
-  #+END_SRC 
-  The first line enables c++17 and the second one removes tons of warnings caused by [[http://eigen.tuxfamily.org][Eigen]].
-
-  This can be done by running the following commands in the directory where =hcustom= is.
-  #+BEGIN_SRC bash
-  cp hcustom hcustom_backup          # backup old hcustom 
-  sed -i 's/c++14/c++17/g' hcustom
-  sed -i 's/no-unused-local-typedefs"/no-unused-local-typedefs -Wno-ignored-attributes -Wno-unused-but-set-variable -Wno-comment -Wno-int-in-bool-context -Wno-misleading-indentation"/g' hcustom
-  #+END_SRC
+  Requirements: You need Houdini, modern c++ compiler, cmake and [[http://eigen.tuxfamily.org][Eigen]] library. I'm testing it with Houdini 17.0.352, gcc 8.1.0, cmake 3.10.1 and Eigen 3.2.92.
 
   To test if everything is working, just open up the scene in =cpp-wrangle/houdini/hip/examples.hipnc= and you should be greeted by the colorful pig:
   [[file:img/colorful_pig.png]]
-  Houdini will freeze for couple of seconds because the c++ code is being compiled, see [[*Slow compilation][Slow compilation]].
-
-** Enabling finite element module =houfem=
-
-   To enable finite element functions you have to do a little bit more work. Go to directory =cpp-wrangle/houdini/cpp/houfem= and build the module with the following commands
-   
-   #+BEGIN_SRC bash
-   mkdir build; cd build
-   cmake .. -DCMAKE_INSTALL_PREFIX=../../..
-   make install
-   #+END_SRC
-
-   To test the finite element module, open the example scene, =cpp-wrangle/houdini/hip/examples.hipnc=. For example, have a look at the =minimal_surface= and you should see the following:
-
-   [[file:img/minimal_surface.png]]
 
 * Slow compilation
 
-  Yeah, I know...is sucks :( The compilation is really slow. But the power of c++ and HDK over VEX is worth it in many situations. The general strategy is to untick =Continuous Recompile= during development and force compilation only manually with button =Recompile=. Once you are done with the development, tick =Continuous Recompile= back on, this will automatically compile and load the c++ code.
+  Yeah, I know...is sucks :( The compilation is really slow. But the power of c++ and HDK over VEX is worth it in many situations. 
 
 * Three Modules
 
@@ -86,15 +45,3 @@
    connection between Houdini and Eigen
 ** houfem
    finite element library
-
-
-
-* New version
-
-  #+BEGIN_SRC bash
-  cd houdini/cpp
-  mkdir -p build/release; cd build/release
-  cmake ../.. -DHOUDINI_ROOT=/opt/hfs17.0 -DCMAKE_INSTALL_PREFIX=../../.. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_EXPORT_COMPILE_COMMANDS=1
-  make -j
-  make install
-  #+END_SRC
