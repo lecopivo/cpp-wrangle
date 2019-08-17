@@ -17,9 +17,10 @@
 #include "utils/scope_guard.hpp"
 
 void newSopOperator(OP_OperatorTable *table) {
-  table->addOperator(new OP_Operator("cpp_wrangle_executor", "Cpp Wrangle Executor",
-                                     SOP_CppWrangleExecutor::myConstructor,
-                                     SOP_CppWrangleExecutor::myTemplateList, 1));
+  table->addOperator(
+      new OP_Operator("cpp_wrangle_executor", "Cpp Wrangle Executor",
+                      SOP_CppWrangleExecutor::myConstructor,
+                      SOP_CppWrangleExecutor::myTemplateList, 1));
 }
 
 static PRM_Name prm_names[] = {
@@ -31,13 +32,15 @@ PRM_Template SOP_CppWrangleExecutor::myTemplateList[] = {
     PRM_Template(),
 };
 
-OP_Node *SOP_CppWrangleExecutor::myConstructor(OP_Network *net, const char *name,
-                                           OP_Operator *op) {
+OP_Node *SOP_CppWrangleExecutor::myConstructor(OP_Network * net,
+                                               const char * name,
+                                               OP_Operator *op) {
   return new SOP_CppWrangleExecutor(net, name, op);
 }
 
-SOP_CppWrangleExecutor::SOP_CppWrangleExecutor(OP_Network *net, const char *name,
-                                       OP_Operator *op)
+SOP_CppWrangleExecutor::SOP_CppWrangleExecutor(OP_Network * net,
+                                               const char * name,
+                                               OP_Operator *op)
     : SOP_Node(net, name, op) {
   // Right now I'm assuming that anything can change
   // In fugure, I might bump data IDs base on which attribute handles were

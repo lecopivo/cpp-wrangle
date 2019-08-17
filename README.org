@@ -84,8 +84,8 @@
 
   #+BEGIN_SRC bash
   cd houdini/cpp
-  mkdir build; cd build
-  cmake .. -DHOUDINI_ROOT=/opt/hfs17.0/ -DCMAKE_INSTALL_PREFIX=../../.. -DCMAKE_BUILD_TYPE=RELEASE 
+  mkdir -p build/release; cd build/release
+  cmake ../.. -DHOUDINI_ROOT=/opt/hfs17.0 -DCMAKE_INSTALL_PREFIX=../../.. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_EXPORT_COMPILE_COMMANDS=1
   make -j
   make install
   #+END_SRC
