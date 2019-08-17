@@ -11,6 +11,6 @@ popd
 
 pushd $DIR
 # compile the code
-hcustom $FILE "${@:2:99}"
+hcustom $FILE -i . "${@:2:99}"
 popd
 

@@ -77,3 +77,15 @@
    connection between Houdini and Eigen
 ** houfem
    finite element library
+
+
+
+* New version
+
+  #+BEGIN_SRC bash
+  cd houdini/cpp
+  mkdir build; cd build
+  cmake .. -DHOUDINI_ROOT=/opt/hfs17.0/ -DCMAKE_INSTALL_PREFIX=../../.. -DCMAKE_BUILD_TYPE=RELEASE 
+  make -j
+  make install
+  #+END_SRC

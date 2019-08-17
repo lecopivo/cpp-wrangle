@@ -13,7 +13,7 @@
 namespace cppvex {
 
 namespace internal {
-
+  
 std::string full_path(const char *parm) {
 
   if (UT_String(parm).isAbsolutePath())
@@ -22,7 +22,8 @@ std::string full_path(const char *parm) {
   UT_String current_node_path;
   current_node->getPathFromParent(current_node_path, nullptr);
 
-  return current_node_path.toStdString() + "/" + parm;
+  // Warrning! This assumes that the the CppWrangleExecutor node is direct child of the CppWrangle!
+  return current_node_path.toStdString() + "/../" + parm; 
 }
 
 std::tuple<OP_Node *, std::string> parm_node_and_name(const char *parm) {
