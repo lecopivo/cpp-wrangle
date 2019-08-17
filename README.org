@@ -20,6 +20,15 @@
 
   Requirements: You need Houdini, modern c++ compiler and [[http://eigen.tuxfamily.org][Eigen]] library. I'm testing it with Houdini 17.0.352, gcc 8.1.0 and Eigen 3.2.92.
 
+  #+BEGIN_SRC 
+  git clone https://github.com/lecopivo/cpp-wrangle.git
+  cd cpp-wrangle/houdini/cpp
+  mkdir -p build/release; cd build/release
+  cmake ../.. -DHOUDINI_ROOT=/opt/hfs17.0 -DCMAKE_INSTALL_PREFIX=../../.. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+  make -j
+  make install
+  #+END_SRC
+
   To download this repository run the standard command where ever you like
   #+BEGIN_SRC bash
   git clone https://github.com/lecopivo/cpp-wrangle.git
