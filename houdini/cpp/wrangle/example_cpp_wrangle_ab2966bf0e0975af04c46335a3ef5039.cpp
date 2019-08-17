@@ -1,11 +1,11 @@
 #include <iostream>
-#include <random>
 
 #include <cppvex/cppvex.h>
 #include <hougen/hougen.h>
 
 #include <GU/GU_Detail.h>
 #include <SOP/SOP_Node.h>
+
 using namespace cppvex;
 
 extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
@@ -17,17 +17,17 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   ////////////// C++ Wrangle Code //////////////
   
   // <wrangle>
+  auto P  = point<vector3>("P");
   auto Cd = point<vector3>("Cd");
   
-  std::default_random_engine generator;
-  std::uniform_real_distribution<float> distribution(0.0,1.0);
-  auto random = [&](){ return distribution(generator); };
-  
-  for(int i=0;i<npoints();i++){
-     vector3 color = {random(), random(), random()};
-  
-     Cd.set(i, color);
+  for (int i = 0; i < npoints(); i++) {
+    const char *group     = "mygroup"; // group name to add points to
+    bool        condition = (P(i).x() > 0) ? true : false; // short form if() test
+    
+    setpointgroup(group, i, condition);
+    Cd.set(i, {1.0f * condition, 0.0, 0.0}); // color if in group
   }
+  
 
   // </wrangle>
 }

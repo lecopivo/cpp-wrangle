@@ -22,6 +22,7 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   for(int i=0; i<npoints(); i++){
     std::cout << "Point " << i << ": " << P(i) << std::endl;
   }
+  
 
   // </wrangle>
 }

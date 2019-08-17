@@ -23,6 +23,7 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   for(int i=0; i<npoints(); i++){
     Cd.set(i, relbbox(0, P(i)));
   }
+  
 
   // </wrangle>
 }
