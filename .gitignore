@@ -4,3 +4,4 @@ backup/
 build/
 /houdini/cpp/simplex/.dir-locals.el
 plugins/
+/houdini/lib/
