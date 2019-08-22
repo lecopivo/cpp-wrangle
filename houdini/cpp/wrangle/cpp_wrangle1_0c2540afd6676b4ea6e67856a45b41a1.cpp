@@ -59,6 +59,7 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   aif->getTupleSize(attr);
   //aif->setBlob(attr, blob_ptr, 0);
 
+  
   std::cout << std::endl;
 
   // </wrangle>
