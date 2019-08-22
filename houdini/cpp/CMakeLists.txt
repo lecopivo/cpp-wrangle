@@ -9,10 +9,23 @@ find_package(Eigen3 REQUIRED)
 
 ### EXECUTOR ###
 
+# SOP
 add_library(CppWrangleExecutor SHARED CppWrangleExecutor.cpp)
 target_link_libraries(CppWrangleExecutor Houdini)
 houdini_configure_target( CppWrangleExecutor )
 
+# DOP
+add_library(CppDOPExecutor SHARED CppDOPExecutor.cpp)
+target_link_libraries(CppDOPExecutor Houdini)
+houdini_configure_target( CppDOPExecutor )
+
+# # DOP
+# add_library(AutoDOP SHARED AutoDOP.cpp)
+# target_link_libraries(AutoDOP Houdini)
+# houdini_configure_target( AutoDOP )
+
+
 ### WRANGLES ###
+add_subdirectory(cppvex)
 add_subdirectory(houfem)
 add_subdirectory(wrangle)
