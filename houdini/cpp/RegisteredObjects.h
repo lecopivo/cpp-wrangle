@@ -40,3 +40,7 @@ REGISTER_OBJECT(
     std::unique_ptr<Eigen::SimplicialLLT<Eigen::SparseMatrix<float>>>)
 REGISTER_OBJECT(
     std::unique_ptr<Eigen::SimplicialLLT<Eigen::SparseMatrix<double>>>)
+REGISTER_OBJECT(
+    std::unique_ptr<Eigen::SparseLU<Eigen::SparseMatrix<float>>>)
+REGISTER_OBJECT(
+    std::unique_ptr<Eigen::SparseLU<Eigen::SparseMatrix<double>>>)

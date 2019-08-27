@@ -2,6 +2,7 @@
 
 #include <cppvex/cppvex.h>
 #include <hougen/hougen.h>
+#include <houfem/fem.h>
 
 #include <GU/GU_Detail.h>
 #include <SOP/SOP_Node.h>
@@ -24,6 +25,16 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   set_object_attr<std::vector<float>>(geo, "vec_attr", std::move(vec));
   
   std::cout << "Saving Custom Object!" << std::endl;
+  
+  auto S = houfem::stiffness_matrix(geo);
+  auto M = houfem::mass_matrix_pwl(geo);
+  
+  using SolverType = Eigen::SimplicialLLT<Eigen::SparseMatrix<double>>;
+  
+  auto solver_ptr = std::make_unique<SolverType>(M);
+  
+  set_object_attr<Eigen::SparseMatrix<double>>(geo, "stiffness_matrix", std::move(S));
+  set_object_attr<std::unique_ptr<SolverType>>(geo, "solver_ptr", std::move(solver_ptr));
   
   
 
