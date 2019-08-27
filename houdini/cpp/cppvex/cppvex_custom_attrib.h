@@ -5,6 +5,7 @@
 #include <GA/GA_Detail.h>
 #include <GU/GU_Detail.h>
 
+#include "../RegisteredObjects.h"
 #include "cppvex_element.h"
 
 #include <any>
@@ -15,71 +16,49 @@ namespace cppvex {
 
 namespace internal {
 
-GA_Attribute *ensure_blob_attribute_existence(GA_Detail *             geo,
-                                              const GA_AttributeOwner owner,
-                                              const char *attribute_name);
+GA_Attribute *ensure_custom_attribute_existence(GA_Detail *             geo,
+                                                const GA_AttributeOwner owner,
+                                                const char *attribute_name){
 
-//    _            ___ _     _
-//   /_\  _ _ _  _| _ ) |___| |__
-//  / _ \| ' \ || | _ \ / _ \ '_ \
-// /_/ \_\_||_\_, |___/_\___/_.__/
-//            |__/
+  auto scope = GA_SCOPE_PUBLIC;
 
-class AnyBlob : public GA_BlobData {
-public:
-  AnyBlob();
-  AnyBlob(std::any data, const uint hash);
-  virtual ~AnyBlob();
+  GA_Attribute *attr = geo->findAttribute(owner, scope, attribute_name);
+  if (!attr) {
+    attr = geo->createAttribute(owner, scope, attribute_name, nullptr, nullptr,
+                                "blob");
+  }
+  return attr;
+}
 
-  virtual uint hash() const;
-  virtual bool isEqual(const GA_BlobData &blob) const;
-
-  virtual int64 getMemoryUsage(bool inclusive) const;
-  virtual void  countMemory(UT_MemoryCounter &counter, bool inclusive) const;
-
-public:
-  std::any   m_data;
-  const uint m_hash;
-};
 } // namespace internal
 
 template <typename T>
-//std::optional<T const &>
-T const&
-getblobattrib(GA_Detail *geo, const GA_AttributeOwner owner,
-              const char *attribute_name, const GA_Index index) {
+// std::optional<T const &>
+T &get_object_attr(GA_Detail *geo, const char *attribute_name) {
 
-  auto attr =
-      internal::ensure_blob_attribute_existence(geo, owner, attribute_name);
-  auto aif = attr->getAIFBlob();
+  auto owner = GA_ATTRIB_DETAIL;
 
-  const GA_Offset offset = elementOffset(geo, owner, index);
+  GA_ROAttributeRef attr =
+      internal::ensure_custom_attribute_existence(geo, owner, attribute_name);
 
-  auto any_blob_ptr = aif->getBlob(attr, offset);
-  if (any_blob_ptr) {
+  auto aif             = attr->getAIFBlob();
+  auto blob_ptr        = aif->getBlob(attr.getAttribute(), 0);
+  auto object_blob_ptr = dynamic_cast<ObjectBlob<T> *>(blob_ptr.get());
 
-    internal::AnyBlob &any_blob =
-        *dynamic_cast<internal::AnyBlob *>(any_blob_ptr.get());
-
-    if (any_blob.m_data.has_value()) {
-      return std::any_cast<T const &>(any_blob);
-    }
-  }
-  return T{};
+  return object_blob_ptr->m_data;
 }
 
 template <typename T>
-void setblobattrib(GA_Detail *geo, const GA_AttributeOwner owner,
-                   const char *attribute_name, const GA_Index index, T&& value) {
-  auto attr =
-      internal::ensure_blob_attribute_existence(geo, owner, attribute_name);
+void set_object_attr(GA_Detail *geo, const char *attribute_name, T &&value) {
+
+  auto owner = GA_ATTRIB_DETAIL;
+
+  GA_RWAttributeRef attr =
+      internal::ensure_custom_attribute_existence(geo, owner, attribute_name);
+
   auto aif = attr->getAIFBlob();
-
-  const uint hash         = 666;//std::hash<T>()(value);
-  GA_BlobRef any_blob_ptr = new internal::AnyBlob{std::forward<T>(value), hash};
-
-  const GA_Offset offset = elementOffset(geo, owner, index);
-
-  aif->setBlob(attr, any_blob_ptr, offset);
+  auto object_blob = new_ObjectBlob<std::decay_t<T>>(std::forward<T>(value));
+  
+  aif->setBlob(attr.getAttribute(), object_blob, 0);
 }
 } // namespace cppvex

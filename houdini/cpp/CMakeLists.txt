@@ -7,23 +7,19 @@ set(CMAKE_PREFIX_PATH "${HOUDINI_ROOT}/toolkit")
 find_package(Houdini REQUIRED)
 find_package(Eigen3 REQUIRED)
 
+### REMOVE PESKY WARRNINGS ###
+
+set(EXTRA_CXX_FLAGS "-Wno-comment;-Wno-ignored-attributes;-Wno-misleading-indentation;-Wno-unused-variable;-Wno-int-in-bool-context")
+
 ### EXECUTOR ###
 
 # SOP
-add_library(CppWrangleExecutor SHARED CppWrangleExecutor.cpp)
-target_link_libraries(CppWrangleExecutor Houdini)
-houdini_configure_target( CppWrangleExecutor )
-
-# DOP
-add_library(CppDOPExecutor SHARED CppDOPExecutor.cpp)
-target_link_libraries(CppDOPExecutor Houdini)
-houdini_configure_target( CppDOPExecutor )
-
-# # DOP
-# add_library(AutoDOP SHARED AutoDOP.cpp)
-# target_link_libraries(AutoDOP Houdini)
-# houdini_configure_target( AutoDOP )
-
+add_library(CppWrangle SHARED CppWrangleExecutor.cpp CppDOPExecutor.cpp LoadPlugin.cpp RegisteredObjects.cpp)
+set_property(TARGET CppWrangle PROPERTY CXX_STANDARD 17)
+target_compile_options(CppWrangle PUBLIC ${EXTRA_CXX_FLAGS})
+target_link_libraries(CppWrangle Houdini)
+target_include_directories(CppWrangle PRIVATE ${EIGEN3_INCLUDE_DIR})
+houdini_configure_target( CppWrangle )
 
 ### WRANGLES ###
 add_subdirectory(cppvex)

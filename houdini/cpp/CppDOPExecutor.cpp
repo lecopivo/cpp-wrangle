@@ -1,4 +1,3 @@
-
 #include <GU/GU_PrimPoly.h>
 #include <PRM/PRM_Include.h>
 #include <SIM/SIM_DataFilter.h>
@@ -8,18 +7,16 @@
 #include <SIM/SIM_GeometryCopy.h>
 #include <SIM/SIM_Object.h>
 #include <SIM/SIM_ObjectArray.h>
-#include <UT/UT_DSOVersion.h>
 
 #include <dlfcn.h>
 
 #include "CppDOPExecutor.h"
 #include "utils/scope_guard.hpp"
 
-void initializeSIM(void *) { IMPLEMENT_DATAFACTORY(SIM_CppDOPExecutor); }
-
 SIM_CppDOPExecutor::SIM_CppDOPExecutor(const SIM_DataFactory *factory)
     : BaseClass(factory)
     , SIM_OptionsUser(this) {}
+
 SIM_CppDOPExecutor::~SIM_CppDOPExecutor() {}
 
 const SIM_DopDescription *

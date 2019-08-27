@@ -11,17 +11,9 @@
 #include <OP/OP_Operator.h>
 #include <OP/OP_OperatorTable.h>
 #include <PRM/PRM_Include.h>
-#include <UT/UT_DSOVersion.h>
 
 #include "CppWrangleExecutor.h"
 #include "utils/scope_guard.hpp"
-
-void newSopOperator(OP_OperatorTable *table) {
-  table->addOperator(
-      new OP_Operator("cpp_wrangle_executor", "Cpp Wrangle Executor",
-                      SOP_CppWrangleExecutor::myConstructor,
-                      SOP_CppWrangleExecutor::myTemplateList, 1));
-}
 
 static PRM_Name prm_names[] = {
     PRM_Name("callback_library", "Callback Library"),

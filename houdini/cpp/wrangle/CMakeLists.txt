@@ -1,7 +1,5 @@
 # Add a library with two source files.
 
-set(EXTRA_CXX_FLAGS "-Wno-comment;-Wno-ignored-attributes;-Wno-misleading-indentation;-Wno-unused-variable;-Wno-int-in-bool-context")
-
 file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 foreach(SRC ${SRC_FILES})
@@ -13,8 +11,8 @@ foreach(SRC ${SRC_FILES})
 
   set_property(TARGET ${NAME} PROPERTY CXX_STANDARD 17)
   target_compile_options(${NAME} PUBLIC ${EXTRA_CXX_FLAGS})
-  target_include_directories(${NAME} PUBLIC "${CMAKE_SOURCE_DIR}" ${EIGEN3_INCLUDE_DIR})
-  target_link_libraries(${NAME} Houdini cppvex houfem)
+  target_include_directories(${NAME} PUBLIC ${CMAKE_SOURCE_DIR} ${EIGEN3_INCLUDE_DIR})
+  target_link_libraries(${NAME} Houdini cppvex houfem CppWrangle)
 
   install (TARGETS ${NAME} DESTINATION lib)
 endforeach()
