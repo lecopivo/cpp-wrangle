@@ -8,9 +8,9 @@
 #include "../RegisteredObjects.h"
 #include "cppvex_element.h"
 
-#include <any>
 #include <functional>
 #include <optional>
+#include <variant>
 
 namespace cppvex {
 
@@ -18,7 +18,7 @@ namespace internal {
 
 GA_Attribute *ensure_custom_attribute_existence(GA_Detail *             geo,
                                                 const GA_AttributeOwner owner,
-                                                const char *attribute_name){
+                                                const char *attribute_name) {
 
   auto scope = GA_SCOPE_PUBLIC;
 
@@ -33,8 +33,7 @@ GA_Attribute *ensure_custom_attribute_existence(GA_Detail *             geo,
 } // namespace internal
 
 template <typename T>
-// std::optional<T const &>
-T &get_object_attr(GA_Detail *geo, const char *attribute_name) {
+T &load_object(GA_Detail *geo, const char *attribute_name) {
 
   auto owner = GA_ATTRIB_DETAIL;
 
@@ -49,16 +48,16 @@ T &get_object_attr(GA_Detail *geo, const char *attribute_name) {
 }
 
 template <typename T>
-void set_object_attr(GA_Detail *geo, const char *attribute_name, T &&value) {
+void save_object(GA_Detail *geo, const char *attribute_name, T &&value) {
 
   auto owner = GA_ATTRIB_DETAIL;
 
   GA_RWAttributeRef attr =
       internal::ensure_custom_attribute_existence(geo, owner, attribute_name);
 
-  auto aif = attr->getAIFBlob();
+  auto aif         = attr->getAIFBlob();
   auto object_blob = new_ObjectBlob<std::decay_t<T>>(std::forward<T>(value));
-  
+
   aif->setBlob(attr.getAttribute(), object_blob, 0);
 }
 } // namespace cppvex

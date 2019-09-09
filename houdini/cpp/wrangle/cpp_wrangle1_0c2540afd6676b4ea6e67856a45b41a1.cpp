@@ -20,21 +20,31 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   ////////////// C++ Wrangle Code //////////////
   
   // <wrangle>
-  std::vector<float> vec = {1,2,3,4,5,6};
+  std::cout << "Computing Laplace Operatorrr!" << std::endl;
   
-  set_object_attr<std::vector<float>>(geo, "vec_attr", std::move(vec));
-  
-  std::cout << "Saving Custom Object!" << std::endl;
-  
+  Eigen::SparseMatrix<double> I(npoints(), npoints());
+  I.setIdentity();
   auto S = houfem::stiffness_matrix(geo);
   auto M = houfem::mass_matrix_pwl(geo);
+  auto [Fixed, Free] = hougen::group_projection(geo, GA_ATTRIB_POINT, "fixed");
+  
+  // Eigen::SparseMatrix<double> Fr = Free;
+  //auto F = (Free.transpose()*Free).eval();
+  
+  double diffusion_rate = chf("../Settings/diffusion_rate");
   
   using SolverType = Eigen::SimplicialLLT<Eigen::SparseMatrix<double>>;
   
-  auto solver_ptr = std::make_unique<SolverType>(M);
+  auto solver_ptr = std::make_unique<SolverType>(Free*(M+diffusion_rate*S)*Free.transpose());
   
-  set_object_attr<Eigen::SparseMatrix<double>>(geo, "stiffness_matrix", std::move(S));
-  set_object_attr<std::unique_ptr<SolverType>>(geo, "solver_ptr", std::move(solver_ptr));
+  auto P = hougen::point<double,3>("P");
+  P = Free.transpose()*solver_ptr->solve(Free*M*Free.transpose()*Free*P - diffusion_rate*Free*S*Fixed.transpose()*Fixed*P) + Fixed.transpose()*Fixed*P;
+  hougen::setpointattrib("P", P);
+  
+  save_object<std::unique_ptr<SolverType>>(geo, "diffusion_operator", std::move(solver_ptr));
+  
+  
+  
   
   
 

@@ -25,14 +25,21 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
   Eigen::SparseMatrix<double> I(npoints(), npoints());
   I.setIdentity();
   auto S = houfem::stiffness_matrix(geo);
+  auto M = houfem::mass_matrix_pwl(geo);
+  auto [Fixed, Free] = hougen::group_projection(geo, GA_ATTRIB_POINT, "fixed");
   
-  double diffusion_rate =  chf("../Settings/diffusion_rate");
+  auto P = (Free.transpose()*Free).eval();
+  
+  double diffusion_rate = chf("../Settings/diffusion_rate");
   
   using SolverType = Eigen::SimplicialLLT<Eigen::SparseMatrix<double>>;
   
-  auto solver_ptr = std::make_unique<SolverType>(I+diffusion_rate*S);
+  Eigen::SparseMatrix<double> A = (M+diffusion_rate*S).eval();
   
-  set_object_attr<std::unique_ptr<SolverType>>(geo, "diffusion_operator", std::move(solver_ptr));
+  auto solver_ptr = std::make_unique<SolverType>(A);
+  
+  save_object<std::unique_ptr<SolverType>>(geo, "diffusion_operator", std::move(solver_ptr));
+  
   
 
   // </wrangle>

@@ -29,6 +29,7 @@ extern "C" void callback(const float time, SOP_Node *node, GU_Detail *geo) {
      Cd.set(i, color);
   }
   
+  
 
   // </wrangle>
 }

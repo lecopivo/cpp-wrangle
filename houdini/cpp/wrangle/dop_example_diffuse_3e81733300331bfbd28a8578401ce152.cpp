@@ -29,18 +29,25 @@ extern "C" void dop_callback(SIM_Engine &engine, SIM_Object &object,
   
   using SolverType = Eigen::SimplicialLLT<Eigen::SparseMatrix<double>>;
   
-  auto const& attrs = geo->getAttributes();
+  auto const &attrs = geo->getAttributes();
   
-  for(auto it = attrs.begin(GA_ATTRIB_DETAIL); it!= attrs.end(GA_ATTRIB_DETAIL); ++it){
-    
+  for (auto it = attrs.begin(GA_ATTRIB_DETAIL);
+       it != attrs.end(GA_ATTRIB_DETAIL); ++it) {
+  
     std::cout << "Attribute: " << it.name() << std::endl;
   }
   
-  auto const& solver = *get_object_attr<std::unique_ptr<SolverType>>(geo, "diffusion_operator");
+  auto const &solver_ptr =
+      load_object<std::unique_ptr<SolverType>>(geo, "diffusion_operator");
   
-  auto P = hougen::point<double,3>(geo, "P");
-  P = solver.solve(P);
+  auto const &solver = *solver_ptr;
+  
+  auto P = hougen::point<double, 3>(geo, "P");
+  P      = solver.solve(P);
   hougen::setpointattrib(geo, "P", P);
+  
+  
+  
   
 
   // </wrangle>
